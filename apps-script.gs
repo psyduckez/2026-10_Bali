@@ -17,7 +17,7 @@ function doPost(e) {
   s.clear();
   const rows = [['Day', 'Date', 'Location', 'Time', 'Activity', 'Places', 'Backup', 'Notes']];
   days.forEach(x => x.items.forEach(i =>
-    rows.push([x.d, x.date, x.loc, i.t, i.x, i.p.join(', '), i.b ? 'Yes' : '', i.n || ''])));
+    rows.push([x.d, x.date, x.loc, i.t, i.x, i.p.join(', '), i.b ? 'Yes' : '', (i.ns ? i.ns.filter(String).join(' | ') : (i.n || ''))])));
   s.getRange(1, 1, rows.length, 8).setNumberFormat('@').setValues(rows);
   const B = body.budget || [];
   const bs = ss.getSheetByName('Budget') || ss.insertSheet('Budget');
