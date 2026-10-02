@@ -54,6 +54,7 @@ select{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--
 .mc select{width:100%;flex:none}.mb{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
 .nt{margin-top:4px;padding-left:8px;border-left:2px solid var(--ac);color:var(--mu);font-size:13px;cursor:pointer}
 .nb{margin-top:2px;padding:0;border:0;background:none;color:var(--mu);font-size:12px;opacity:.7}.ni{margin-top:4px}
+.nib{flex:none;align-self:flex-start;border:0;background:none;color:var(--mu);padding:3px 2px;opacity:.35;line-height:0}.nib svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.nib.has{opacity:1;color:var(--ac)}
 .donut{width:96px;height:96px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center}
 .donut div{width:62px;height:62px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;text-align:center}
 .lg{display:flex;gap:6px;align-items:center;font-size:13px;margin:2px 0}.lg b{margin-left:auto;font-weight:500}
@@ -88,7 +89,7 @@ select{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--
 <div class="mb"><button onclick="closeM()">Cancel</button><button class="pri" onclick="addEntry()">Add</button></div></div></div>
 <div class="ver" id="ver"></div>
 <script>
-const APP_VERSION="1.3.1";
+const APP_VERSION="1.3.2";
 document.getElementById("ver").textContent="v"+APP_VERSION;
 const D=(d,date,loc,area,color,items)=>({d,date,loc,area,color,items:items.map(i=>({t:i[0],x:i[1],p:i[2]||[],b:i[3]||0}))});
 const DEF=[
@@ -194,7 +195,7 @@ ${d.items.map((it,j)=>editing?`<div class="item ${it.b?"bk":""}"><div class="t">
 <input type="text" value="${esc(it.p.join(", "))}" placeholder="Places (comma separated) → map links" oninput="S[${i}].items[${j}].p=this.value.split(',').map(s=>s.trim()).filter(Boolean);save()">
 <input type="text" value="${esc(it.n||"")}" placeholder="Notes" oninput="S[${i}].items[${j}].n=this.value;save()">
 <div class="ed"><label><input type="checkbox" ${it.b?"checked":""} onchange="S[${i}].items[${j}].b=this.checked?1:0;save();render()"> Backup plan</label><button onclick="delItem(${i},${j})">Remove</button></div></div></div>`
-:`<div class="item ${it.b?"bk":""}"><div class="t">${esc(it.t)}</div><div class="x">${esc(it.x)}${it.p.length?"<div>"+it.p.map(p=>`<a class="pl" target="_blank" rel="noopener" href="${link(p,d.area)}">📍 ${esc(p)}</a>`).join("")+"</div>":""}${noteHtml(i,j,it)}</div></div>`).join("")}
+:`<div class="item ${it.b?"bk":""}"><div class="t">${esc(it.t)}</div><div class="x">${esc(it.x)}${it.p.length?"<div>"+it.p.map(p=>`<a class="pl" target="_blank" rel="noopener" href="${link(p,d.area)}">📍 ${esc(p)}</a>`).join("")+"</div>":""}${noteHtml(i,j,it)}</div><button class="nib${it.n?" has":""}" onclick="openNote(${i},${j})" aria-label="Note" title="Note"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M7 12q1.5-3 3 0t3 0t3 0"/></svg></button></div>`).join("")}
 ${editing?`<div class="add"><button onclick="addItem(${i})">+ Add item</button></div>`:""}</section>`).join("");
 renderChips(ti);
 if(view=="bd")renderBudget();
@@ -228,7 +229,7 @@ function fxToggle(){const p=document.getElementById("fx");p.style.display=p.styl
 addEventListener("online",()=>pull());addEventListener("offline",()=>setStat("Offline – showing saved copy"));
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 function noteHtml(i,j,it){if(openN&&openN[0]==i&&openN[1]==j)return `<input type="text" id="ni" class="ni" value="${esc(it.n||"")}" placeholder="Add a note…" onblur="saveNote(${i},${j},this.value)" onkeydown="if(event.key=='Enter')this.blur()">`;
-return it.n?`<div class="nt" onclick="openNote(${i},${j})">${esc(it.n)}</div>`:`<button class="nb" onclick="openNote(${i},${j})">+ note</button>`}
+return it.n?`<div class="nt" onclick="openNote(${i},${j})">${esc(it.n)}</div>`:""}
 function openNote(i,j){openN=[i,j];render();setTimeout(()=>{const e=document.getElementById("ni");if(e)e.focus()},0)}
 function saveNote(i,j,v){if(!openN)return;openN=null;S[i].items[j].n=v.trim();save();render()}
 function tmin(t){const m=/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/i.exec(String(t).trim());if(!m)return null;let h=+m[1];const p=(m[3]||"").toLowerCase();if(p=="pm"&&h<12)h+=12;if(p=="am"&&h==12)h=0;return h*60+(+m[2]||0)}
