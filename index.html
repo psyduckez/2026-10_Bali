@@ -30,6 +30,8 @@ input[type=text]{width:100%;font:inherit;color:var(--tx);background:var(--bg);bo
 .ed{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mu)}
 .add{padding:8px 12px;border-top:1px solid var(--ln)}
 .dhe{flex:1}
+.ib{display:inline-flex;align-items:center;justify-content:center;padding:6px 8px;vertical-align:middle}
+.ib svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .day{scroll-margin-top:calc(54px + env(safe-area-inset-top,0px))}
 #chips{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding:8px 0;margin-bottom:6px}
 .chip{flex:none;padding:4px 10px;border-radius:14px;font-size:13px}
@@ -39,9 +41,11 @@ input[type=text]{width:100%;font:inherit;color:var(--tx);background:var(--bg);bo
 .fx .row{display:flex;gap:8px;align-items:center}.fx .row span{width:36px;color:var(--mu)}
 .ver{text-align:center;color:var(--mu);font-size:11px;opacity:.6;margin:18px 0 6px}
 </style></head><body>
-<header><div><h1>Bali Itinerary</h1><div class="sub">Oct 3 – Oct 12 · tap places for Google Maps · <span id="stat">Not synced</span></div></div>
-<div><button id="edit" class="pri">Edit</button> <button onclick="goToday()">📅 Today</button> <button onclick="fxToggle()">💱</button> <button onclick="pull(true)">🔄 Sync</button> <button onclick="setUrl()">🔗 Sheet link</button></div></header>
-<div id="cfg" style="display:none;gap:6px;margin-bottom:12px"><input type="text" id="u" placeholder="Paste Google Apps Script URL (ends in /exec)" style="margin:0"><button class="pri" onclick="saveUrl()">Save &amp; sync</button></div>
+<header><div><h1>Bali Itinerary</h1><div class="sub">Oct 3 – Oct 12 · <span id="stat">Not synced</span></div></div>
+<div><button id="edit" class="ib" title="Edit" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button> <button onclick="goToday()">📅 Today</button> <button class="ib" onclick="fxToggle()" title="Currency" aria-label="Currency converter"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 6.5C16 5 14 4.5 12 4.5c-3 0-5 1.5-5 3.5s2 3 5 3.5 5 1.5 5 3.5-2 3.5-5 3.5c-2 0-4-.5-5-2"/></svg></button> <button class="ib" onclick="toggleSet()" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></header>
+<div id="set" class="fx" style="display:none"><div class="sub" style="margin-bottom:6px">Google Sheet sync</div>
+<div style="display:flex;gap:6px"><input type="text" id="u" placeholder="Paste Google Apps Script URL (ends in /exec)" style="margin:0"><button class="pri" onclick="saveUrl()">Save &amp; sync</button></div>
+<div style="margin-top:8px"><button onclick="pull(true)">Sync now</button></div></div>
 <div id="fx" class="fx" style="display:none">
 <div class="row"><input type="text" inputmode="decimal" id="aud" placeholder="Amount" oninput="fxFrom('aud')"><span>AUD</span></div>
 <div class="row"><input type="text" inputmode="decimal" id="idr" placeholder="Amount" oninput="fxFrom('idr')"><span>IDR</span></div>
@@ -51,7 +55,7 @@ input[type=text]{width:100%;font:inherit;color:var(--tx);background:var(--bg);bo
 <div id="app"></div><div id="addday" style="display:none"><button class="pri" onclick="addDay()">+ Add day</button></div>
 <div class="ver" id="ver"></div>
 <script>
-const APP_VERSION="1.1.0";
+const APP_VERSION="1.1.1";
 document.getElementById("ver").textContent="v"+APP_VERSION;
 const D=(d,date,loc,area,color,items)=>({d,date,loc,area,color,items:items.map(i=>({t:i[0],x:i[1],p:i[2]||[],b:i[3]||0}))});
 const DEF=[
@@ -134,10 +138,11 @@ if(!j.days){await push()}
 else if(j.at>at){S=j.days;at=j.at;persist();render();setStat("Synced ✓ "+new Date().toLocaleTimeString())}
 else if(j.at<at){await push()}
 else setStat("Synced ✓ "+new Date().toLocaleTimeString())}catch(e){setStat(navigator.onLine===false?"Offline – showing saved copy":"Sync failed: "+(e&&e.message||e))}busy=false}
-function setUrl(){const c=document.getElementById("cfg");c.style.display=c.style.display=="none"?"flex":"none";document.getElementById("u").value=url}
+function toggleSet(){const c=document.getElementById("set");c.style.display=c.style.display=="none"?"block":"none";document.getElementById("u").value=url}
+function setUrl(){document.getElementById("set").style.display="block";document.getElementById("u").value=url}
 function saveUrl(){url=document.getElementById("u").value.trim();let ok=true;try{localStorage.setItem("bali-sheet-url",url);ok=localStorage.getItem("bali-sheet-url")===url}catch(e){ok=false}
 if(!url){setStat("No sheet link set");return}
-document.getElementById("cfg").style.display="none";if(!ok)alert("This browser can't remember the link, so you'll need to re-enter it each visit (try Safari/Chrome instead of an in-app browser).");pull(true)}
+if(!ok)alert("This browser can't remember the link, so you'll need to re-enter it each visit (try Safari/Chrome instead of an in-app browser).");pull(true)}
 async function checkVer(){try{const r=await fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"});const m=(await r.text()).match(/APP_VERSION="([^"]+)"/);
 if(m&&m[1]!==APP_VERSION){const n=+sessionStorage.getItem("bali-rl")||0;if(n<2){sessionStorage.setItem("bali-rl",n+1);location.replace(location.pathname+"?v="+encodeURIComponent(m[1]))}}else sessionStorage.removeItem("bali-rl")}catch(e){}}
 setInterval(pull,15000);setInterval(checkVer,60000);checkVer();document.addEventListener("visibilitychange",()=>{if(!document.hidden){pull();checkVer()}});if(url)pull();else setStat("No sheet link – tap 🔗");
@@ -164,7 +169,7 @@ function addItem(i){S[i].items.push({t:"",x:"",p:[],b:0});save();render()}
 function delItem(i,j){S[i].items.splice(j,1);save();render()}
 function addDay(){S.push({d:"Day "+(S.length+1),date:"",loc:"",area:"Bali",color:"syd",items:[]});save();render()}
 function delDay(i){if(confirm("Remove this day?")){S.splice(i,1);save();render()}}
-document.getElementById("edit").onclick=function(){editing=!editing;this.textContent=editing?"Done":"Edit";document.getElementById("addday").style.display=editing?"block":"none";render()};
+document.getElementById("edit").onclick=function(){editing=!editing;this.classList.toggle("pri",editing);this.innerHTML=editing?`<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`:`<svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>`;document.getElementById("addday").style.display=editing?"block":"none";render()};
 const MON={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
 function dayDate(d){const m=/(\d{1,2})\s+([A-Za-z]{3})/.exec(d.date||"");if(!m||MON[m[2].toLowerCase()]==null)return null;return new Date(new Date().getFullYear(),MON[m[2].toLowerCase()],+m[1])}
 function today0(){const n=new Date();n.setHours(0,0,0,0);return n}
