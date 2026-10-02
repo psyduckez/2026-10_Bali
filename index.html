@@ -2,6 +2,11 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b6e6e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bali">
+<link rel="apple-touch-icon" href="icon-180.png">
 <title>Bali Itinerary</title>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#faf7f2;--card:#fff;--tx:#222;--mu:#777;--ln:#e6e0d6;--ac:#0b6e6e;--bk:#fde8cc;--ubud:#f3dde6;--ulu:#dbe6f7;--solo:#dcebd5;--jkt:#f2d4d0;--syd:#eee}
@@ -25,15 +30,28 @@ input[type=text]{width:100%;font:inherit;color:var(--tx);background:var(--bg);bo
 .ed{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mu)}
 .add{padding:8px 12px;border-top:1px solid var(--ln)}
 .dhe{flex:1}
+.day{scroll-margin-top:calc(54px + env(safe-area-inset-top,0px))}
+#chips{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:6px;overflow-x:auto;padding:8px 0;margin-bottom:6px}
+.chip{flex:none;padding:4px 10px;border-radius:14px;font-size:13px}
+.chip.now{background:var(--ac);color:var(--bg);border-color:var(--ac)}
+.tb{background:var(--ac);color:var(--bg);font-size:11px;padding:1px 7px;border-radius:10px;margin-left:6px;vertical-align:middle}
+.fx{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.fx .row{display:flex;gap:8px;align-items:center}.fx .row span{width:36px;color:var(--mu)}
 .ver{text-align:center;color:var(--mu);font-size:11px;opacity:.6;margin:18px 0 6px}
 </style></head><body>
 <header><div><h1>Bali Itinerary</h1><div class="sub">Oct 3 – Oct 12 · tap places for Google Maps · <span id="stat">Not synced</span></div></div>
-<div><button id="edit" class="pri">Edit</button> <button onclick="pull(true)">🔄 Sync</button> <button onclick="setUrl()">🔗 Sheet link</button> <button id="reset">Reset</button></div></header>
+<div><button id="edit" class="pri">Edit</button> <button onclick="goToday()">📅 Today</button> <button onclick="fxToggle()">💱</button> <button onclick="pull(true)">🔄 Sync</button> <button onclick="setUrl()">🔗 Sheet link</button></div></header>
 <div id="cfg" style="display:none;gap:6px;margin-bottom:12px"><input type="text" id="u" placeholder="Paste Google Apps Script URL (ends in /exec)" style="margin:0"><button class="pri" onclick="saveUrl()">Save &amp; sync</button></div>
+<div id="fx" class="fx" style="display:none">
+<div class="row"><input type="text" inputmode="decimal" id="aud" placeholder="Amount" oninput="fxFrom('aud')"><span>AUD</span></div>
+<div class="row"><input type="text" inputmode="decimal" id="idr" placeholder="Amount" oninput="fxFrom('idr')"><span>IDR</span></div>
+<div class="row sub">1 AUD = <input type="text" inputmode="decimal" id="rate" style="width:90px;margin:0" oninput="fxFrom('rate')"> IDR <button onclick="fxRefresh()">↻</button></div>
+<div class="sub" id="fxs"></div><div class="sub" id="fxq" style="margin-top:4px"></div></div>
+<nav id="chips"></nav>
 <div id="app"></div><div id="addday" style="display:none"><button class="pri" onclick="addDay()">+ Add day</button></div>
 <div class="ver" id="ver"></div>
 <script>
-const APP_VERSION="1.0.3";
+const APP_VERSION="1.1.0";
 document.getElementById("ver").textContent="v"+APP_VERSION;
 const D=(d,date,loc,area,color,items)=>({d,date,loc,area,color,items:items.map(i=>({t:i[0],x:i[1],p:i[2]||[],b:i[3]||0}))});
 const DEF=[
@@ -115,7 +133,7 @@ try{const r=await fetch(url);const j=await r.json();
 if(!j.days){await push()}
 else if(j.at>at){S=j.days;at=j.at;persist();render();setStat("Synced ✓ "+new Date().toLocaleTimeString())}
 else if(j.at<at){await push()}
-else setStat("Synced ✓ "+new Date().toLocaleTimeString())}catch(e){setStat("Sync failed: "+(e&&e.message||e))}busy=false}
+else setStat("Synced ✓ "+new Date().toLocaleTimeString())}catch(e){setStat(navigator.onLine===false?"Offline – showing saved copy":"Sync failed: "+(e&&e.message||e))}busy=false}
 function setUrl(){const c=document.getElementById("cfg");c.style.display=c.style.display=="none"?"flex":"none";document.getElementById("u").value=url}
 function saveUrl(){url=document.getElementById("u").value.trim();let ok=true;try{localStorage.setItem("bali-sheet-url",url);ok=localStorage.getItem("bali-sheet-url")===url}catch(e){ok=false}
 if(!url){setStat("No sheet link set");return}
@@ -126,25 +144,50 @@ setInterval(pull,15000);setInterval(checkVer,60000);checkVer();document.addEvent
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const link=(p,a)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p+" "+a);
 function render(){
-document.getElementById("app").innerHTML=S.map((d,i)=>`<section class="day">
+const ti=todayIdx();
+document.getElementById("app").innerHTML=S.map((d,i)=>`<section class="day" id="day-${i}">
 <div class="dh" style="background:var(--${d.color||"syd"})">${editing?`<div class="dhe">
 <input type="text" value="${esc(d.d)}" placeholder="Day" oninput="S[${i}].d=this.value;save()">
 <input type="text" value="${esc(d.date)}" placeholder="Date" oninput="S[${i}].date=this.value;save()">
 <input type="text" value="${esc(d.loc)}" placeholder="Location" oninput="S[${i}].loc=this.value;save()">
 <input type="text" value="${esc(d.area)}" placeholder="Map area (e.g. Ubud, Bali)" oninput="S[${i}].area=this.value;save()"></div>
-<button onclick="delDay(${i})">🗑 Day</button>`:`<div><b>${esc(d.d)} · ${esc(d.date)}</b><small>${esc(d.loc)}</small></div>`}</div>
+<button onclick="delDay(${i})">🗑 Day</button>`:`<div><b>${esc(d.d)} · ${esc(d.date)}</b>${i==ti?'<span class="tb">Today</span>':""}<small>${esc(d.loc)}</small></div>`}</div>
 ${d.items.map((it,j)=>editing?`<div class="item ${it.b?"bk":""}"><div class="t"><input type="text" value="${esc(it.t)}" oninput="S[${i}].items[${j}].t=this.value;save()"></div>
 <div class="x"><input type="text" value="${esc(it.x)}" oninput="S[${i}].items[${j}].x=this.value;save()">
 <input type="text" value="${esc(it.p.join(", "))}" placeholder="Places (comma separated) → map links" oninput="S[${i}].items[${j}].p=this.value.split(',').map(s=>s.trim()).filter(Boolean);save()">
 <div class="ed"><label><input type="checkbox" ${it.b?"checked":""} onchange="S[${i}].items[${j}].b=this.checked?1:0;save();render()"> Backup plan</label><button onclick="delItem(${i},${j})">Remove</button></div></div></div>`
 :`<div class="item ${it.b?"bk":""}"><div class="t">${esc(it.t)}</div><div class="x">${esc(it.x)}${it.p.length?"<div>"+it.p.map(p=>`<a class="pl" target="_blank" rel="noopener" href="${link(p,d.area)}">📍 ${esc(p)}</a>`).join("")+"</div>":""}</div></div>`).join("")}
 ${editing?`<div class="add"><button onclick="addItem(${i})">+ Add item</button></div>`:""}</section>`).join("");
+renderChips(ti);
 }
 function addItem(i){S[i].items.push({t:"",x:"",p:[],b:0});save();render()}
 function delItem(i,j){S[i].items.splice(j,1);save();render()}
 function addDay(){S.push({d:"Day "+(S.length+1),date:"",loc:"",area:"Bali",color:"syd",items:[]});save();render()}
 function delDay(i){if(confirm("Remove this day?")){S.splice(i,1);save();render()}}
 document.getElementById("edit").onclick=function(){editing=!editing;this.textContent=editing?"Done":"Edit";document.getElementById("addday").style.display=editing?"block":"none";render()};
-document.getElementById("reset").onclick=()=>{if(confirm("Reset to the original itinerary? Your edits will be lost.")){S=JSON.parse(JSON.stringify(DEF));save();render()}};
+const MON={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+function dayDate(d){const m=/(\d{1,2})\s+([A-Za-z]{3})/.exec(d.date||"");if(!m||MON[m[2].toLowerCase()]==null)return null;return new Date(new Date().getFullYear(),MON[m[2].toLowerCase()],+m[1])}
+function today0(){const n=new Date();n.setHours(0,0,0,0);return n}
+function todayIdx(){const n=today0().getTime();return S.findIndex(d=>{const x=dayDate(d);return x&&x.getTime()==n})}
+function goDay(i){const e=document.getElementById("day-"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
+function goToday(){let i=todayIdx();if(i<0){const n=today0();i=S.findIndex(d=>{const x=dayDate(d);return x&&x>n});if(i<0)i=0}goDay(i)}
+function renderChips(ti){document.getElementById("chips").innerHTML=S.map((d,i)=>`<button class="chip${i==ti?" now":""}" onclick="goDay(${i})">D${i+1}</button>`).join("")}
+let rate=10500,rateAt=0,fxOff=false;try{const r=JSON.parse(localStorage.getItem("bali-fx"));if(r&&r.rate>0){rate=r.rate;rateAt=r.at}}catch(e){}
+const fmt=n=>isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):"";
+const num=v=>parseFloat(String(v).replace(/,/g,""))||0;
+function fxShow(){document.getElementById("rate").value=rate;
+document.getElementById("fxs").textContent=(rateAt?"Rate updated "+new Date(rateAt).toLocaleDateString():"Estimated rate – tap ↻ when online")+(fxOff?" · offline, using saved rate":"");
+document.getElementById("fxq").textContent=[50000,100000,500000,1000000].map(v=>fmt(v)+" IDR ≈ "+fmt(v/rate)+" AUD").join(" · ")}
+function fxSave(){try{localStorage.setItem("bali-fx",JSON.stringify({rate,at:rateAt}))}catch(e){}}
+function fxFrom(w){const a=document.getElementById("aud"),r=document.getElementById("idr");
+if(w=="rate"){const v=num(document.getElementById("rate").value);if(v>0){rate=v;rateAt=0;fxSave()}w="aud"}
+if(w=="aud")r.value=a.value?fmt(num(a.value)*rate):"";else a.value=r.value?fmt(num(r.value)/rate):"";fxShow()}
+async function fxRefresh(){fxOff=false;document.getElementById("fxs").textContent="Refreshing…";
+try{const r=await fetch("https://open.er-api.com/v6/latest/AUD");const j=await r.json();const v=j&&j.rates&&j.rates.IDR;if(v>0){rate=v;rateAt=Date.now();fxSave()}else fxOff=true}catch(e){fxOff=true}
+fxShow();fxFrom("aud")}
+function fxToggle(){const p=document.getElementById("fx");p.style.display=p.style.display=="none"?"block":"none";fxShow();if(p.style.display=="block"&&(!rateAt||Date.now()-rateAt>864e5))fxRefresh()}
+addEventListener("online",()=>pull());addEventListener("offline",()=>setStat("Offline – showing saved copy"));
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
 render();
+if(todayIdx()>=0)setTimeout(goToday,300);
 </script></body></html>
