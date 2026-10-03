@@ -74,6 +74,15 @@ select{font:inherit;font-size:16px;color:var(--tx);background:var(--bg);border:1
 .dh{align-items:center}
 .wx{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--mu);white-space:nowrap;background:var(--card);padding:3px 9px;border-radius:12px;flex:none;font-variant-numeric:tabular-nums}
 .wx svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+#done{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:16;border-radius:24px;padding:10px 22px;box-shadow:0 2px 10px rgba(0,0,0,.3);align-items:center;gap:6px;font-weight:600}
+#done svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ed label{margin-right:auto}
+.grip{flex:none;align-self:center;width:22px;display:flex;align-items:center;justify-content:center;color:var(--mu);touch-action:none;cursor:grab;padding:10px 0;margin-left:-6px}.grip svg{width:18px;height:18px;fill:currentColor}
+.dragging .item{transition:transform .15s}.item.drag{transition:none!important;background:var(--card);box-shadow:0 6px 18px rgba(0,0,0,.28);position:relative;z-index:3}
+.xps{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;align-items:center}
+.xp{display:inline-flex;align-items:center;gap:5px;font-size:12px;background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:1px 9px;cursor:pointer;font-variant-numeric:tabular-nums}
+.ef{display:flex;gap:6px;flex-wrap:wrap;width:100%}.ef input{width:104px;margin:0}.ef select{flex:1;min-width:92px;margin:0}
 </style></head><body>
 <header><div><h1>Bali Itinerary</h1><div class="sub">Oct 3 – Oct 12 · <span id="stat">Not synced</span></div></div>
 <div id="hi" style="margin-left:auto"><button class="ib" onclick="goToday()" title="Today" aria-label="Jump to today"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button> <button id="edit" class="ib" title="Edit" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button></div></header>
@@ -94,12 +103,13 @@ select{font:inherit;font-size:16px;color:var(--tx);background:var(--bg);border:1
 <div class="row"><input type="text" inputmode="decimal" id="b-a" placeholder="Amount" style="margin:0"><select id="b-u" style="flex:none;margin:0"><option>IDR</option><option>AUD</option></select><button class="pri" onclick="addExp()">Add</button></div></div>
 <div class="row"><select id="b-f" onchange="renderBudget()"></select><button class="cur" id="bc-IDR" onclick="setCur('IDR')">IDR</button><button class="cur" id="bc-AUD" onclick="setCur('AUD')">AUD</button></div>
 <div class="fx" id="b-sum"></div><div class="fx" id="b-days"></div><div class="fx" id="b-list"></div></div>
+<button id="done" class="pri" onclick="setEdit(false)" style="display:none"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Done</button>
 <div id="fabs"><button class="ib fab" onclick="fxToggle()" title="Currency" aria-label="Currency converter"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 6.5C16 5 14 4.5 12 4.5c-3 0-5 1.5-5 3.5s2 3 5 3.5 5 1.5 5 3.5-2 3.5-5 3.5c-2 0-4-.5-5-2"/></svg></button><button id="fab-add" class="ib fab pri" onclick="openM()" title="Add entry" aria-label="Add entry"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
 <div class="modal" id="modal" style="display:none"><div class="mc"><b>Add entry</b><label>Date</label><select id="m-d"></select><label>Time</label><input type="text" id="m-t" placeholder="e.g. 9:30am"><label>Activity</label><input type="text" id="m-x" placeholder="What's happening?">
 <div class="mb"><button onclick="closeM()">Cancel</button><button class="pri" onclick="addEntry()">Add</button></div></div></div>
 <div class="ver" id="ver"></div>
 <script>
-const APP_VERSION="1.5.0";
+const APP_VERSION="1.6.0";
 document.getElementById("ver").textContent="v"+APP_VERSION;
 const D=(d,date,loc,area,color,items)=>({d,date,loc,area,color,items:items.map(i=>({t:i[0],x:i[1],p:i[2]||[],b:i[3]||0}))});
 const DEF=[
@@ -200,12 +210,12 @@ document.getElementById("app").innerHTML=S.map((d,i)=>`<section class="day" id="
 <input type="text" value="${esc(d.loc)}" placeholder="Location" oninput="S[${i}].loc=this.value;save()">
 <input type="text" value="${esc(d.area)}" placeholder="Map area (e.g. Ubud, Bali)" oninput="S[${i}].area=this.value;save()"></div>
 <button onclick="delDay(${i})">🗑 Day</button>`:`<div><b>${esc(d.d)} · ${esc(d.date)}</b>${i==ti?'<span class="tb">Today</span>':""}<small>${esc(d.loc)}</small></div>${wxChip(d)}`}</div>
-${d.items.map((it,j)=>editing?`<div class="item ${it.b?"bk":""}"><div class="t"><input type="text" value="${esc(it.t)}" oninput="S[${i}].items[${j}].t=this.value;save()"></div>
+${d.items.map((it,j)=>editing?`<div class="item ${it.b?"bk":""}" data-i="${i}" data-j="${j}"><div class="grip" title="Drag to reorder" aria-label="Drag to reorder"><svg viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></div><div class="t"><input type="text" value="${esc(it.t)}" oninput="S[${i}].items[${j}].t=this.value;save()"></div>
 <div class="x"><input type="text" value="${esc(it.x)}" oninput="S[${i}].items[${j}].x=this.value;save()">
 <input type="text" value="${esc(it.p.join(", "))}" placeholder="Places (comma separated) → map links" oninput="S[${i}].items[${j}].p=this.value.split(',').map(s=>s.trim()).filter(Boolean);save()">
 ${notes(it).map((t,k)=>`<input type="text" value="${esc(t)}" placeholder="Note" oninput="setNote(${i},${j},${k},this.value)">`).join("")}
-<div class="ed"><label><input type="checkbox" ${it.b?"checked":""} onchange="S[${i}].items[${j}].b=this.checked?1:0;save();render()"> Backup plan</label><button class="nib" onclick="addNoteEd(${i},${j})" aria-label="Add note" title="Add note" style="opacity:.8"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button><button onclick="delItem(${i},${j})">Remove</button></div></div></div>`
-:`<div class="item ${it.b?"bk":""}"><div class="t">${esc(it.t)}</div><div class="x">${esc(it.x)}${it.p.length?"<div>"+it.p.map(p=>`<a class="pl" target="_blank" rel="noopener" href="${link(p,d.area)}">${PIN}${esc(p)}</a>`).join("")+"</div>":""}${noteHtml(i,j,it)}</div><button class="nib${hasN(it)?" has":""}" onclick="openNote(${i},${j},-1)" aria-label="Add note" title="Add note"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button></div>`).join("")}
+<div class="ed"><label><input type="checkbox" ${it.b?"checked":""} onchange="S[${i}].items[${j}].b=this.checked?1:0;save();render()"> Backup plan</label><button class="nib" onclick="addNoteEd(${i},${j})" aria-label="Add note" title="Add note" style="opacity:.8"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button><button class="nib" onclick="delItem(${i},${j})" aria-label="Remove entry" title="Remove entry" style="opacity:.8"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></div></div>`
+:`<div class="item ${it.b?"bk":""}"><div class="t">${esc(it.t)}</div><div class="x">${esc(it.x)}${it.p.length?"<div>"+it.p.map(p=>`<a class="pl" target="_blank" rel="noopener" href="${link(p,d.area)}">${PIN}${esc(p)}</a>`).join("")+"</div>":""}${noteHtml(i,j,it)}${expHtml(i,j,it)}</div><button class="nib${hasN(it)?" has":""}" onclick="openNote(${i},${j},-1)" aria-label="Add note" title="Add note"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button><button class="nib${hasE(it)?" has":""}" onclick="openExp(${i},${j})" aria-label="Add expense" title="Add expense"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.2C14 8.4 13.1 8 12 8c-1.4 0-2.5.7-2.5 1.8 0 2.6 5 1.4 5 4 0 1.1-1.1 1.8-2.5 1.8-1.1 0-2-.4-2.5-1.2M12 6.5V8M12 16v1.5"/></svg></button></div>`).join("")}
 ${editing?`<div class="add"><button onclick="addItem(${i})">+ Add item</button></div>`:""}</section>`).join("");
 renderChips(ti);
 if(view=="bd")renderBudget();
@@ -214,7 +224,9 @@ function addItem(i){S[i].items.push({t:"",x:"",p:[],b:0});save();render()}
 function delItem(i,j){S[i].items.splice(j,1);save();render()}
 function addDay(){S.push({d:"Day "+(S.length+1),date:"",loc:"",area:"Bali",color:"syd",items:[]});save();render()}
 function delDay(i){if(confirm("Remove this day?")){S.splice(i,1);save();render()}}
-document.getElementById("edit").onclick=function(){editing=!editing;this.classList.toggle("pri",editing);document.getElementById("set").style.display=editing?"block":"none";document.getElementById("u").value=url;this.innerHTML=editing?`<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`:`<svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>`;document.getElementById("addday").style.display=editing?"block":"none";render()};
+function setEdit(v){editing=v;const e=document.getElementById("edit");e.classList.toggle("pri",v);e.innerHTML=v?`<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`:`<svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>`;
+document.getElementById("set").style.display=v&&view=="it"?"block":"none";document.getElementById("u").value=url;document.getElementById("addday").style.display=v?"block":"none";document.getElementById("done").style.display=v&&view=="it"?"inline-flex":"none";render()}
+document.getElementById("edit").onclick=()=>setEdit(!editing);
 const MON={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
 function dayDate(d){const m=/(\d{1,2})\s+([A-Za-z]{3})/.exec(d.date||"");if(!m||MON[m[2].toLowerCase()]==null)return null;return new Date(new Date().getFullYear(),MON[m[2].toLowerCase()],+m[1])}
 function today0(){const n=new Date();n.setHours(0,0,0,0);return n}
@@ -257,7 +269,7 @@ const it={t,x,p:[],b:0,n:""},n=tmin(t),a=S[i].items;let k=n==null?-1:a.findIndex
 save();closeM();if(view!="it")tab("it");render();setTimeout(()=>goDay(i),50)}
 function tab(v){if(v==view)return;view=v;const b=v=="bd";document.getElementById("itin").style.display=b?"none":"block";document.getElementById("bd").style.display=b?"block":"none";
 document.getElementById("hi").style.display=b?"none":"";document.getElementById("fab-add").style.display=b?"none":"flex";
-document.getElementById("set").style.display=!b&&editing?"block":"none";
+document.getElementById("set").style.display=!b&&editing?"block":"none";document.getElementById("done").style.display=!b&&editing?"inline-flex":"none";
 document.getElementById("t-it").classList.toggle("on",!b);document.getElementById("t-bd").classList.toggle("on",b);document.getElementById("pill").classList.toggle("r",b);const inc=document.getElementById(b?"bd":"itin");inc.classList.remove("sl","sr");void inc.offsetWidth;inc.classList.add(b?"sr":"sl");if(b)renderBudget()}
 document.getElementById("tabs").addEventListener("pointermove",e=>{if(e.buttons){const r=e.currentTarget.getBoundingClientRect();tab(e.clientX-r.left>r.width/2?"bd":"it")}});
 const CATS=[["Food & drink","#e9a23b"],["Transport","#3b82c4"],["Accommodation","#8e5bd0"],["Activities","#2e9e5b"],["Shopping","#d64f8a"],["Other","#8a8f98"]];
@@ -278,12 +290,12 @@ const dt=S.map(d=>({k:d.date||d.d,e:B.filter(e=>e.d==(d.date||d.d))})),mx=Math.m
 document.getElementById("b-days").innerHTML=`<div class="sub">Spend per day (${bcur}) – tap a bar to filter</div><div class="bars">`+dt.map((x,i)=>{const t=sumA(x.e);return `<div class="bc${x.k==f?" sel":""}" data-k="${esc(x.k)}" onclick="pickDay(this.dataset.k)"><small>${t?short(cv(t)):""}</small><div class="st">${CATS.map(c=>{const v=sumA(x.e.filter(e=>e.c==c[0]));return v?`<i style="height:${Math.max(2,v/mx*110)}px;background:${c[1]}"></i>`:""}).join("")}</div><small>D${i+1}</small></div>`}).join("")+"</div>";
 const order=k=>{const i=S.findIndex(d=>(d.date||d.d)==k);return i<0?999:i},lbl=k=>{const d=S.find(d=>(d.date||d.d)==k);return d?d.d:k};
 const XI='<svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>';
-document.getElementById("b-list").innerHTML=L.length?[...L].sort((a,b)=>order(a.d)-order(b.d)).map(e=>`<div class="er"><span class="dot" style="background:${(CATS.find(c=>c[0]==e.c)||CATS[5])[1]}"></span><div class="ex"><div>${esc(e.x)}</div><small>${esc(lbl(e.d))} · ${esc(e.c)}</small></div><b>${fc(e.a)}</b><button class="ib" data-id="${esc(e.id)}" onclick="delExp(this.dataset.id)" aria-label="Delete">${XI}</button></div>`).join(""):'<div class="sub">No expenses yet – add one above.</div>'}
+document.getElementById("b-list").innerHTML=L.length?[...L].sort((a,b)=>order(a.d)-order(b.d)).map(e=>`<div class="er"><span class="dot" style="background:${(CATS.find(c=>c[0]==e.c)||CATS[5])[1]}"></span><div class="ex"><div>${esc(e.x)}</div><small>${esc(lbl(e.d))} · ${esc(e.c)}${e.ref?" · linked to entry":""}</small></div><b>${fc(e.a)}</b><button class="ib" data-id="${esc(e.id)}" onclick="delExp(this.dataset.id)" aria-label="Delete">${XI}</button></div>`).join(""):'<div class="sub">No expenses yet – add one above.</div>'}
 function pickDay(k){const fs=document.getElementById("b-f");fs.value=fs.value==k?"":k;renderBudget()}
 function addExp(){const a=num(document.getElementById("b-a").value);if(!(a>0))return;const c=document.getElementById("b-c").value,x=document.getElementById("b-x").value.trim();
 B.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),d:document.getElementById("b-d").value,x:x||c,c,a:Math.round(document.getElementById("b-u").value=="AUD"?a*rate:a)});
 document.getElementById("b-a").value="";document.getElementById("b-x").value="";save();renderBudget()}
-function delExp(id){B=B.filter(e=>e.id!=id);save();renderBudget()}
+function delExp(id){B=B.filter(e=>e.id!=id);save();render();renderBudget()}
 
 const PIN='<svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
 const WI={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
@@ -301,6 +313,26 @@ if(ch){try{localStorage.setItem("bali-wx",JSON.stringify(WX))}catch(e){}if(!typi
 function wxChip(d){const p=wpl(d),x=dayDate(d);if(!p||!x||!WX[p[0]])return "";const w=WX[p[0]].d,key=x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"),i=w.time.indexOf(key);if(i<0)return "";
 const pop=w.precipitation_probability_max[i];return `<span class="wx"><svg viewBox="0 0 24 24">${WI[wkind(w.weather_code[i])]}</svg>${Math.round(w.temperature_2m_max[i])}°/${Math.round(w.temperature_2m_min[i])}°${pop>=30?" · "+pop+"%":""}</span>`}
 addEventListener("online",loadWx);
+const uid=it=>it.id||(it.id=Math.random().toString(36).slice(2,9)),hasE=it=>!!it.id&&B.some(e=>e.ref===it.id);
+let openE=null;
+const guessCat=t=>/breakfast|lunch|dinner|dessert|cafe|coffee|restaurant|warung|skewer|food|drink|bakery|bakehouse/i.test(t)?"Food & drink":/fly|flight|travel|taxi|car|transfer|airport/i.test(t)?"Transport":/check-?in|hotel|inn|stay/i.test(t)?"Accommodation":/spa|waterfall|beach|temple|dance|surf|walk|market|pottery|cycling|terrace|cave|club|tour|pool/i.test(t)?"Activities":"Food & drink";
+function expHtml(i,j,it){let h=B.filter(e=>e.ref&&e.ref===it.id).map(e=>`<span class="xp" data-id="${esc(e.id)}" onclick="delExpPill(this.dataset.id)" title="Tap to remove"><span class="dot" style="background:${(CATS.find(c=>c[0]==e.c)||CATS[5])[1]}"></span>${bcur=="AUD"?"A$":"Rp "}${fc(e.a)}</span>`).join("");
+if(openE&&openE[0]==i&&openE[1]==j){const g=guessCat(it.x);h+=`<div class="ef"><input type="text" inputmode="decimal" id="ef-a" placeholder="Amount"><select id="ef-u" style="flex:none;min-width:70px"><option>IDR</option><option>AUD</option></select><select id="ef-c">${CATS.map(c=>`<option${c[0]==g?" selected":""}>${esc(c[0])}</option>`).join("")}</select><button class="pri" onclick="saveEfx(${i},${j})">Add</button><button onclick="openE=null;render()">Cancel</button></div>`}
+return h?`<div class="xps">${h}</div>`:""}
+function openExp(i,j){uid(S[i].items[j]);openE=[i,j];render();setTimeout(()=>{const e=document.getElementById("ef-a");if(e)e.focus()},0)}
+function saveEfx(i,j){const it=S[i].items[j],a=num(document.getElementById("ef-a").value);if(!(a>0))return;
+B.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),d:S[i].date||S[i].d,x:it.x,c:document.getElementById("ef-c").value,a:Math.round(document.getElementById("ef-u").value=="AUD"?a*rate:a),ref:uid(it)});openE=null;save();render()}
+function delExpPill(id){if(confirm("Remove this expense?")){B=B.filter(e=>e.id!=id);save();render()}}
+let drag=null;
+function dragCalc(){const d=drag,dy=d.y-d.y0+(scrollY-d.s0);d.it.style.transform=`translateY(${dy}px)`;const R=d.r,c=R[d.idx].top+R[d.idx].h/2+dy;let t=d.idx;
+if(dy>0){for(let k=d.idx+1;k<R.length;k++)if(c>R[k].top+R[k].h/2)t=k}else{for(let k=d.idx-1;k>=0;k--)if(c<R[k].top+R[k].h/2)t=k}
+d.t=t;const h=R[d.idx].h;d.els.forEach((x,m)=>{if(m==d.idx)return;let sh=0;if(d.idx<t&&m>d.idx&&m<=t)sh=-h;else if(d.idx>t&&m>=t&&m<d.idx)sh=h;x.style.transform=sh?`translateY(${sh}px)`:""})}
+function dragLoop(){if(!drag)return;if(drag.y<90)scrollBy(0,-10);else if(drag.y>innerHeight-80)scrollBy(0,10);dragCalc();requestAnimationFrame(dragLoop)}
+function dragEnd(){if(!drag)return;const d=drag;drag=null;d.els.forEach(x=>{x.style.transform=""});d.it.classList.remove("drag");d.sec.classList.remove("dragging");
+if(d.t!=d.idx){const i=+d.it.dataset.i,a=S[i].items,o=a.map((_,k)=>k);o.splice(d.idx,1);o.splice(d.t,0,d.idx);S[i].items=o.map(k=>a[k]);save()}render()}
+document.getElementById("app").addEventListener("pointerdown",e=>{const g=e.target.closest&&e.target.closest(".grip");if(!g)return;e.preventDefault();const it=g.closest(".item"),sec=it.parentElement,els=[...sec.querySelectorAll(".item[data-j]")];
+drag={it,sec,els,idx:els.indexOf(it),t:els.indexOf(it),y:e.clientY,y0:e.clientY,s0:scrollY,r:els.map(x=>({top:x.offsetTop,h:x.offsetHeight}))};it.classList.add("drag");sec.classList.add("dragging");dragLoop()});
+document.addEventListener("pointermove",e=>{if(drag)drag.y=e.clientY});document.addEventListener("pointerup",dragEnd);document.addEventListener("pointercancel",dragEnd);
 render();
 loadWx();
 if(todayIdx()>=0)setTimeout(goToday,300);
