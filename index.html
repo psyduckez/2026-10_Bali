@@ -48,10 +48,10 @@ body{padding-bottom:96px}
 .row{display:flex;gap:8px;align-items:center}
 select{font:inherit;font-size:16px;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:6px;padding:5px 7px;min-width:0;flex:1;margin-bottom:4px}
 #tabs{position:relative;display:flex;margin-bottom:10px;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:3px;touch-action:none;user-select:none;-webkit-user-select:none}
-#pill{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);background:var(--ac);border-radius:9px;transition:transform .3s cubic-bezier(.4,0,.2,1)}#pill.r{transform:translateX(100%)}
+#pill{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);background:var(--ac);border-radius:9px;transition:transform .42s cubic-bezier(.22,1,.36,1)}#pill.r{transform:translateX(100%)}
 .tab{flex:1;position:relative;z-index:1;background:none;border:0;color:var(--tx);transition:color .25s}.tab.on{background:none;color:var(--bg)}
 @keyframes sr{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}@keyframes sl{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
-.sr{animation:sr .3s ease}.sl{animation:sl .3s ease}
+.sr{animation:sr .28s cubic-bezier(.2,.8,.2,1)}.sl{animation:sl .28s cubic-bezier(.2,.8,.2,1)}@keyframes xl{to{opacity:0;transform:translateX(-24px)}}@keyframes xr{to{opacity:0;transform:translateX(24px)}}.xl{animation:xl .18s ease-in forwards}.xr{animation:xr .18s ease-in forwards}#itin,#bd{will-change:transform,opacity}
 #fabs{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;z-index:15}
 .fab{width:52px;height:52px;border-radius:50%;padding:0;box-shadow:0 2px 8px rgba(0,0,0,.28)}.fab svg{width:24px;height:24px}
 #fx{position:fixed;right:16px;bottom:calc(150px + env(safe-area-inset-bottom,0px));width:min(340px,calc(100vw - 32px));z-index:20;box-shadow:0 4px 16px rgba(0,0,0,.3);margin:0}
@@ -82,34 +82,66 @@ select{font:inherit;font-size:16px;color:var(--tx);background:var(--bg);border:1
 .dragging .item{transition:transform .15s}.item.drag{transition:none!important;background:var(--card);box-shadow:0 6px 18px rgba(0,0,0,.28);position:relative;z-index:3}
 .xps{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;align-items:center}
 .xp{display:inline-flex;align-items:center;gap:5px;font-size:12px;background:var(--bg);border:1px solid var(--ln);border-radius:12px;padding:1px 9px;cursor:pointer;font-variant-numeric:tabular-nums}
-.ef{display:flex;gap:6px;flex-wrap:wrap;width:100%}.ef input{width:104px;margin:0}.ef select{flex:1;min-width:92px;margin:0}
+.ef{display:flex;gap:6px;flex-wrap:wrap;width:100%}.ef input{width:104px;margin:0}.ef #ef-x{width:100%}.xp b{font-weight:600}.xl2{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--mu)}.ef select{flex:1;min-width:92px;margin:0}
+
+.day{border:0;background:var(--card);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.07);position:relative;overflow:hidden;--c:#9aa0a6}
+.c-ubud{--c:#e08aae}.c-ulu{--c:#6ea1e0}.c-solo{--c:#6fbf73}.c-jkt{--c:#e57d73}.c-syd{--c:#9aa0a6}
+.day::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+.dh{background:none;padding:12px 8px 8px 16px;cursor:pointer;display:flex;align-items:center;gap:8px}.dt{flex:1;min-width:0}
+.dm{opacity:.55}.chev{flex:none;color:var(--mu);transition:transform .25s;display:inline-flex}.chev svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.folded .chev{transform:rotate(-90deg)}
+.item{gap:0;border-top:0;padding:0 12px 0 16px;cursor:pointer;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+.item .t{width:58px;padding:8px 0;text-align:right;font-variant-numeric:tabular-nums}
+.rail{flex:none;width:22px;position:relative}
+.rail::before{content:"";position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--ln)}
+.item.f .rail::before{top:16px}.item.l .rail::before{bottom:calc(100% - 16px)}
+.rail::after{content:"";position:absolute;left:5px;top:10px;width:12px;height:12px;border-radius:50%;background:var(--card);border:2px solid var(--c)}
+.item.bk .rail::after{border-style:dashed}.item.bk{background:linear-gradient(90deg,transparent,var(--bk))}
+.item .x{padding:7px 0 8px}.tx{font-size:14px}.items{padding-bottom:8px}.empty{padding:6px 16px 10px;color:var(--mu);font-size:12px}.folded .items{display:none}
+.nt{margin-top:3px;padding-left:8px;border-left:2px solid var(--c);color:var(--mu);font-size:12px;cursor:inherit}.pls{display:flex;flex-wrap:wrap}.xp{cursor:inherit}
+.chip{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15;padding:4px 10px}.chip small{font-size:11px;opacity:.75}.chip b{font-size:14px;font-weight:600}
+.mo{flex:none;align-self:center;font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.04em;padding:0 2px}
+.nowc{background:var(--ac);color:var(--bg);border-radius:14px;padding:12px 14px;margin-bottom:12px;cursor:pointer}
+.nl{font-size:11px;text-transform:uppercase;letter-spacing:.05em;opacity:.85}.nm{font-size:16px;margin:2px 0 6px}.nm b{font-weight:650}
+.nr{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.nr:empty{display:none}
+.dir{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--bg);text-decoration:none;border:1px solid currentColor;border-radius:12px;padding:3px 10px}.dir svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.addday{display:block;width:100%;border:1.5px dashed var(--ln);background:none;color:var(--mu);padding:12px;border-radius:14px;margin-bottom:10px}
+#tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));width:min(240px,64vw);margin:0;z-index:16;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+#fabs{bottom:calc(76px + env(safe-area-inset-bottom,0px))}#fx{bottom:calc(210px + env(safe-area-inset-bottom,0px))}body{padding-bottom:130px}
+#bk{position:fixed;inset:0;background:rgba(0,0,0,.42);opacity:0;pointer-events:none;transition:opacity .3s;z-index:39}#bk.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;width:min(560px,100%);transform:translate(-50%,105%);max-height:86vh;overflow:auto;background:var(--card);border-radius:18px 18px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom,0px));z-index:40;transition:transform .36s cubic-bezier(.22,1,.36,1);box-shadow:0 -6px 24px rgba(0,0,0,.25)}.sheet.open{transform:translate(-50%,0)}
+.grab{width:38px;height:4px;border-radius:2px;background:var(--ln);margin:0 auto 12px}
+.fl{display:block;font-size:11px;color:var(--mu);margin:12px 0 4px;text-transform:uppercase;letter-spacing:.04em}
+.acts{display:flex;gap:8px;align-items:center;margin-top:16px}.acts .pri{margin-left:auto}
+.ghost{border:0;background:none;color:var(--ac);padding:4px 0}.tgl{display:flex;gap:8px;align-items:center;margin-top:12px}
+.sdot{position:relative;width:9px;height:9px;padding:0;border-radius:50%;border:0;display:inline-block;margin-left:8px;vertical-align:middle;background:#9a9a9a}.sdot::after{content:"";position:absolute;inset:-12px}.sdot.ok{background:#2e9e5b}.sdot.busy{background:#e0a030}
 </style></head><body>
-<header><div><h1>Bali Itinerary</h1><div class="sub">Oct 3 – Oct 12 · <span id="stat">Not synced</span></div></div>
-<div id="hi" style="margin-left:auto"><button class="ib" onclick="goToday()" title="Today" aria-label="Jump to today"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button> <button id="edit" class="ib" title="Edit" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button></div></header>
-<div id="set" class="fx" style="display:none"><div class="sub" style="margin-bottom:6px">Google Sheet sync</div>
-<div style="display:flex;gap:6px"><input type="text" id="u" placeholder="Paste Google Apps Script URL (ends in /exec)" style="margin:0"><button class="pri" onclick="saveUrl()">Save &amp; sync</button></div>
-<div style="margin-top:8px"><button onclick="pull(true)">Sync now</button></div></div>
+<header><div><h1>Bali Itinerary</h1><div class="sub">Oct 3 – Oct 12<button id="sdot" class="sdot bad" onclick="openSheet('s-sync')" aria-label="Sync status"></button></div></div>
+<div id="hi" style="margin-left:auto"><button class="ib" onclick="goToday()" title="Today" aria-label="Jump to today"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button></div></header>
 <div id="fx" class="fx" style="display:none">
 <div class="row"><input type="text" inputmode="decimal" id="idr" placeholder="Amount" oninput="fxFrom('idr')"><span>IDR</span></div>
 <div class="row"><input type="text" inputmode="decimal" id="aud" placeholder="Amount" oninput="fxFrom('aud')"><span>AUD</span></div>
 <div class="row sub">1 AUD = <input type="text" inputmode="decimal" id="rate" style="width:90px;margin:0" oninput="fxFrom('rate')"> IDR <button onclick="fxRefresh()">↻</button></div>
 <div class="sub" id="fxs"></div><div class="sub" id="fxq" style="margin-top:4px"></div></div>
-<div id="tabs"><div id="pill"></div><button class="tab on" id="t-it" onclick="tab('it')">Itinerary</button><button class="tab" id="t-bd" onclick="tab('bd')">Budget</button></div>
-<div id="itin"><nav id="chips"></nav>
-<div id="app"></div><div id="addday" style="display:none"><button class="pri" onclick="addDay()">+ Add day</button></div></div>
+<div id="tabs"><div id="pill"></div><button class="tab on" id="t-it">Itinerary</button><button class="tab" id="t-bd">Budget</button></div>
+<div id="itin"><div id="now"></div><nav id="chips"></nav>
+<div id="app"></div><button id="addday" class="addday" onclick="newDay()">+ Add day</button></div>
 <div id="bd" style="display:none">
 <div class="fx" style="margin-bottom:10px"><div class="row"><select id="b-d"></select><select id="b-c"></select></div>
 <input type="text" id="b-x" placeholder="Description (e.g. Lunch at Alchemy)">
 <div class="row"><input type="text" inputmode="decimal" id="b-a" placeholder="Amount" style="margin:0"><select id="b-u" style="flex:none;margin:0"><option>IDR</option><option>AUD</option></select><button class="pri" onclick="addExp()">Add</button></div></div>
 <div class="row"><select id="b-f" onchange="renderBudget()"></select><button class="cur" id="bc-IDR" onclick="setCur('IDR')">IDR</button><button class="cur" id="bc-AUD" onclick="setCur('AUD')">AUD</button></div>
 <div class="fx" id="b-sum"></div><div class="fx" id="b-days"></div><div class="fx" id="b-list"></div></div>
-<button id="done" class="pri" onclick="setEdit(false)" style="display:none"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Done</button>
 <div id="fabs"><button class="ib fab" onclick="fxToggle()" title="Currency" aria-label="Currency converter"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 6.5C16 5 14 4.5 12 4.5c-3 0-5 1.5-5 3.5s2 3 5 3.5 5 1.5 5 3.5-2 3.5-5 3.5c-2 0-4-.5-5-2"/></svg></button><button id="fab-add" class="ib fab pri" onclick="openM()" title="Add entry" aria-label="Add entry"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
 <div class="modal" id="modal" style="display:none"><div class="mc"><b>Add entry</b><label>Date</label><select id="m-d"></select><label>Time</label><input type="text" id="m-t" placeholder="e.g. 9:30am"><label>Activity</label><input type="text" id="m-x" placeholder="What's happening?">
 <div class="mb"><button onclick="closeM()">Cancel</button><button class="pri" onclick="addEntry()">Add</button></div></div></div>
+<div id="bk" onclick="closeSheets()"></div>
+<div class="sheet" id="s-entry"></div><div class="sheet" id="s-day"></div>
+<div class="sheet" id="s-sync"><div class="grab"></div><b>Sync</b><div class="sub" id="stat" style="margin:4px 0 6px">Not synced</div>
+<label class="fl">Google Apps Script link</label><input type="text" id="u" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Paste Google Apps Script URL (ends in /exec)">
+<div class="acts"><button onclick="pull(true)">Sync now</button><button class="pri" onclick="saveUrl()">Save &amp; sync</button></div></div>
 <div class="ver" id="ver"></div>
 <script>
-const APP_VERSION="1.6.0";
+const APP_VERSION="1.8.0";
 document.getElementById("ver").textContent="v"+APP_VERSION;
 const D=(d,date,loc,area,color,items)=>({d,date,loc,area,color,items:items.map(i=>({t:i[0],x:i[1],p:i[2]||[],b:i[3]||0}))});
 const DEF=[
@@ -179,61 +211,45 @@ const KEY="bali-itin-v1";let S,editing=false;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!Array.isArray(S))S=JSON.parse(JSON.stringify(DEF));
 let url="";try{url=localStorage.getItem("bali-sheet-url")||""}catch(e){}
-const setStat=t=>{document.getElementById("stat").textContent=t};
+const setStat=t=>{const e=document.getElementById("stat");if(e)e.textContent=t;const d=document.getElementById("sdot");if(d){d.className="sdot "+(/Synced/.test(t)?"ok":/Saving|Checking|Refresh|Upload|Download/.test(t)?"busy":"bad");d.title=t}};
 let at=0,tm=null,busy=false,view="it",openN=null,B=[];try{B=JSON.parse(localStorage.getItem("bali-budget"))}catch(e){}if(!Array.isArray(B))B=[];try{at=+localStorage.getItem("bali-at")||0}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(S));localStorage.setItem("bali-at",at);localStorage.setItem("bali-budget",JSON.stringify(B))}catch(e){}}
 function save(){at=Date.now();persist();clearTimeout(tm);if(url){setStat("Saving…");tm=setTimeout(()=>{tm=null;push()},1500)}}
 const typing=()=>document.activeElement&&document.activeElement.tagName=="INPUT";
 async function push(){try{const r=await fetch(url,{method:"POST",body:JSON.stringify({at,days:S,budget:B})});const j=await r.json();setStat(j.ok?"Synced ✓ "+new Date().toLocaleTimeString():"Save error")}catch(e){setStat("Offline – will retry")}}
-async function pull(f){if(!url){if(f===true)setUrl();else setStat("No sheet link set");return}
+async function pull(f){if(!url){if(f===true)setUrl();else setStat("No sheet link");return}
 if(f!==true&&(busy||tm||typing()))return;busy=true;setStat("Checking…");
 try{const r=await fetch(url);const j=await r.json();
 if(!j.days){await push()}
 else if(j.at>at){S=j.days;if(Array.isArray(j.budget))B=j.budget;at=j.at;persist();render();setStat("Synced ✓ "+new Date().toLocaleTimeString())}
 else if(j.at<at){await push()}
 else setStat("Synced ✓ "+new Date().toLocaleTimeString())}catch(e){setStat(navigator.onLine===false?"Offline – showing saved copy":"Sync failed: "+(e&&e.message||e))}busy=false}
-function setUrl(){const c=document.getElementById("u");c.value=url;c.focus()}
+function setUrl(){openSheet("s-sync")}
 function saveUrl(){url=document.getElementById("u").value.trim();let ok=true;try{localStorage.setItem("bali-sheet-url",url);ok=localStorage.getItem("bali-sheet-url")===url}catch(e){ok=false}
-if(!url){setStat("No sheet link set");return}
+if(!url){setStat("No sheet link");return}
 if(!ok)alert("This browser can't remember the link, so you'll need to re-enter it each visit (try Safari/Chrome instead of an in-app browser).");pull(true)}
 async function checkVer(){try{const r=await fetch(location.pathname+"?t="+Date.now(),{cache:"no-store"});const m=(await r.text()).match(/APP_VERSION="([^"]+)"/);
 if(m&&m[1]!==APP_VERSION){const n=+sessionStorage.getItem("bali-rl")||0;if(n<2){sessionStorage.setItem("bali-rl",n+1);location.replace(location.pathname+"?v="+encodeURIComponent(m[1]))}}else sessionStorage.removeItem("bali-rl")}catch(e){}}
-setInterval(pull,15000);setInterval(checkVer,60000);checkVer();document.addEventListener("visibilitychange",()=>{if(!document.hidden){pull();checkVer()}});if(url)pull();else setStat("No sheet link – tap 🔗");
+setInterval(pull,15000);setInterval(checkVer,60000);checkVer();document.addEventListener("visibilitychange",()=>{if(!document.hidden){pull();checkVer()}});if(url)pull();else setStat("No sheet link");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const link=(p,a)=>"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p+" "+a);
 function render(){
 const ti=todayIdx();
-document.getElementById("app").innerHTML=S.map((d,i)=>`<section class="day" id="day-${i}">
-<div class="dh" style="background:var(--${d.color||"syd"})">${editing?`<div class="dhe">
-<input type="text" value="${esc(d.d)}" placeholder="Day" oninput="S[${i}].d=this.value;save()">
-<input type="text" value="${esc(d.date)}" placeholder="Date" oninput="S[${i}].date=this.value;save()">
-<input type="text" value="${esc(d.loc)}" placeholder="Location" oninput="S[${i}].loc=this.value;save()">
-<input type="text" value="${esc(d.area)}" placeholder="Map area (e.g. Ubud, Bali)" oninput="S[${i}].area=this.value;save()"></div>
-<button onclick="delDay(${i})">🗑 Day</button>`:`<div><b>${esc(d.d)} · ${esc(d.date)}</b>${i==ti?'<span class="tb">Today</span>':""}<small>${esc(d.loc)}</small></div>${wxChip(d)}`}</div>
-${d.items.map((it,j)=>editing?`<div class="item ${it.b?"bk":""}" data-i="${i}" data-j="${j}"><div class="grip" title="Drag to reorder" aria-label="Drag to reorder"><svg viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg></div><div class="t"><input type="text" value="${esc(it.t)}" oninput="S[${i}].items[${j}].t=this.value;save()"></div>
-<div class="x"><input type="text" value="${esc(it.x)}" oninput="S[${i}].items[${j}].x=this.value;save()">
-<input type="text" value="${esc(it.p.join(", "))}" placeholder="Places (comma separated) → map links" oninput="S[${i}].items[${j}].p=this.value.split(',').map(s=>s.trim()).filter(Boolean);save()">
-${notes(it).map((t,k)=>`<input type="text" value="${esc(t)}" placeholder="Note" oninput="setNote(${i},${j},${k},this.value)">`).join("")}
-<div class="ed"><label><input type="checkbox" ${it.b?"checked":""} onchange="S[${i}].items[${j}].b=this.checked?1:0;save();render()"> Backup plan</label><button class="nib" onclick="addNoteEd(${i},${j})" aria-label="Add note" title="Add note" style="opacity:.8"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button><button class="nib" onclick="delItem(${i},${j})" aria-label="Remove entry" title="Remove entry" style="opacity:.8"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></div></div>`
-:`<div class="item ${it.b?"bk":""}"><div class="t">${esc(it.t)}</div><div class="x">${esc(it.x)}${it.p.length?"<div>"+it.p.map(p=>`<a class="pl" target="_blank" rel="noopener" href="${link(p,d.area)}">${PIN}${esc(p)}</a>`).join("")+"</div>":""}${noteHtml(i,j,it)}${expHtml(i,j,it)}</div><button class="nib${hasN(it)?" has":""}" onclick="openNote(${i},${j},-1)" aria-label="Add note" title="Add note"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button><button class="nib${hasE(it)?" has":""}" onclick="openExp(${i},${j})" aria-label="Add expense" title="Add expense"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.2C14 8.4 13.1 8 12 8c-1.4 0-2.5.7-2.5 1.8 0 2.6 5 1.4 5 4 0 1.1-1.1 1.8-2.5 1.8-1.1 0-2-.4-2.5-1.2M12 6.5V8M12 16v1.5"/></svg></button></div>`).join("")}
-${editing?`<div class="add"><button onclick="addItem(${i})">+ Add item</button></div>`:""}</section>`).join("");
-renderChips(ti);
+document.getElementById("app").innerHTML=S.map((d,i)=>{const fd=isFold(i),n=d.items.length;
+return `<section class="day c-${d.color||"syd"}${fd?" folded":""}" id="day-${i}"><div class="dh" onclick="foldDay(${i})"><div class="dt"><b>${esc(d.d)} · ${esc(d.date)}</b>${i==ti?'<span class="tb">Today</span>':""}<small>${esc(d.loc)}${fd?" · "+n+" entries":""}</small></div>${wxChip(d)}<button class="ib dm" onclick="event.stopPropagation();openDay(${i})" aria-label="Day settings">${DOTS}</button><span class="chev">${CHEV}</span></div>
+${fd?"":`<div class="items">${d.items.map((it,j)=>`<div class="item${it.b?" bk":""}${j==0?" f":""}${j==n-1?" l":""}" data-i="${i}" data-j="${j}" onclick="rowTap(event,${i},${j})"><div class="t">${esc(it.t)}</div><div class="rail"></div><div class="x"><div class="tx">${esc(it.x)}</div>${it.p.length?'<div class="pls">'+it.p.map(p=>`<a class="pl" target="_blank" rel="noopener" href="${link(p,d.area)}">${PIN}${esc(p)}</a>`).join("")+"</div>":""}${notes(it).filter(Boolean).map(t=>`<div class="nt">${esc(t)}</div>`).join("")}${pillsHtml(it)}</div></div>`).join("")}${n?"":'<div class="empty">No entries yet</div>'}</div>`}</section>`}).join("");
+renderChips(ti);renderNow();
 if(view=="bd")renderBudget();
 }
-function addItem(i){S[i].items.push({t:"",x:"",p:[],b:0});save();render()}
-function delItem(i,j){S[i].items.splice(j,1);save();render()}
-function addDay(){S.push({d:"Day "+(S.length+1),date:"",loc:"",area:"Bali",color:"syd",items:[]});save();render()}
-function delDay(i){if(confirm("Remove this day?")){S.splice(i,1);save();render()}}
-function setEdit(v){editing=v;const e=document.getElementById("edit");e.classList.toggle("pri",v);e.innerHTML=v?`<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`:`<svg viewBox="0 0 24 24"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>`;
-document.getElementById("set").style.display=v&&view=="it"?"block":"none";document.getElementById("u").value=url;document.getElementById("addday").style.display=v?"block":"none";document.getElementById("done").style.display=v&&view=="it"?"inline-flex":"none";render()}
-document.getElementById("edit").onclick=()=>setEdit(!editing);
+
 const MON={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
 function dayDate(d){const m=/(\d{1,2})\s+([A-Za-z]{3})/.exec(d.date||"");if(!m||MON[m[2].toLowerCase()]==null)return null;return new Date(new Date().getFullYear(),MON[m[2].toLowerCase()],+m[1])}
 function today0(){const n=new Date();n.setHours(0,0,0,0);return n}
 function todayIdx(){const n=today0().getTime();return S.findIndex(d=>{const x=dayDate(d);return x&&x.getTime()==n})}
-function goDay(i){const e=document.getElementById("day-"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
+function goDay(i){const d=S[i];if(d&&typeof isFold=="function"&&isFold(i)){COL[d.date||d.d]=false;render()}const e=document.getElementById("day-"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
 function goToday(){let i=todayIdx();if(i<0){const n=today0();i=S.findIndex(d=>{const x=dayDate(d);return x&&x>n});if(i<0)i=0}goDay(i)}
-function renderChips(ti){const t=today0();document.getElementById("chips").innerHTML=S.map((d,i)=>{const x=dayDate(d);const c=i==ti?" now":(x&&x<t?" past":"");return `<button class="chip${c}" onclick="goDay(${i})">D${i+1}</button>`}).join("")}
+function renderChips(ti){const t=today0();let lm=-1;document.getElementById("chips").innerHTML=S.map((d,i)=>{const x=dayDate(d);let h="";if(x&&x.getMonth()!==lm){lm=x.getMonth();h+=`<span class="mo">${x.toLocaleDateString("en-US",{month:"short"})}</span>`}
+const c=i==ti?" now":(x&&x<t?" past":"");return h+`<button class="chip${c}" onclick="goDay(${i})">${x?`<small>${x.toLocaleDateString("en-US",{weekday:"short"})}</small><b>${x.getDate()}</b>`:`<b>D${i+1}</b>`}</button>`}).join("")}
 let rate=10500,rateAt=0,fxOff=false;try{const r=JSON.parse(localStorage.getItem("bali-fx"));if(r&&r.rate>0){rate=r.rate;rateAt=r.at}}catch(e){}
 const fmt=n=>isFinite(n)?n.toLocaleString(undefined,{maximumFractionDigits:2}):"";
 const num=v=>parseFloat(String(v).replace(/,/g,""))||0;
@@ -250,28 +266,26 @@ fxShow();fxFrom("aud")}
 function fxToggle(){const p=document.getElementById("fx");p.style.display=p.style.display=="none"?"block":"none";fxShow();if(p.style.display=="block"&&(!rateAt||Date.now()-rateAt>864e5))fxRefresh()}
 addEventListener("online",()=>pull());addEventListener("offline",()=>setStat("Offline – showing saved copy"));
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
-const syncN=it=>{it.n=(it.ns||[]).filter(t=>t&&t.trim()).join("\n")},notes=it=>Array.isArray(it.ns)?it.ns:(it.n?String(it.n).split("\n"):[]),hasN=it=>notes(it).some(t=>t);
-const inp=(i,j,k,t)=>`<input type="text" id="ni" class="ni" value="${esc(t)}" placeholder="Add a note…" onblur="saveNote(${i},${j},${k},this.value)" onkeydown="if(event.key=='Enter'){window.nxN=1;this.blur()}">`;
-function noteHtml(i,j,it){const a=notes(it),o=openN&&openN[0]==i&&openN[1]==j?openN[2]:null;
-let h=a.map((t,k)=>o===k?inp(i,j,k,t):(t?`<div class="nt" onclick="openNote(${i},${j},${k})">${esc(t)}</div>`:"")).join("");
-if(o!==null&&o>=a.length)h+=inp(i,j,o,"");return h}
-function openNote(i,j,k){const n=notes(S[i].items[j]).length;openN=[i,j,k<0?n:k];render();setTimeout(()=>{const e=document.getElementById("ni");if(e)e.focus()},0)}
-function saveNote(i,j,k,v){if(!openN)return;openN=null;v=v.trim();const it=S[i].items[j],a=[...notes(it)];
-if(k>=a.length){if(v)a.push(v)}else if(v)a[k]=v;else a.splice(k,1);it.ns=a;syncN(it);save();render();
-if(window.nxN&&v){window.nxN=0;openNote(i,j,-1)}window.nxN=0}
-function setNote(i,j,k,v){const it=S[i].items[j],a=[...notes(it)];a[k]=v;it.ns=a;syncN(it);save()}
-function addNoteEd(i,j){const it=S[i].items[j];it.ns=[...notes(it),""];syncN(it);save();render()}
+const syncN=it=>{it.n=(it.ns||[]).filter(t=>t&&t.trim()).join("\n")},notes=it=>Array.isArray(it.ns)?it.ns:(it.n?String(it.n).split("\n"):[]);
 function tmin(t){const m=/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/i.exec(String(t).trim());if(!m)return null;let h=+m[1];const p=(m[3]||"").toLowerCase();if(p=="pm"&&h<12)h+=12;if(p=="am"&&h==12)h=0;return h*60+(+m[2]||0)}
 function openM(){const sel=document.getElementById("m-d");sel.innerHTML=S.map((d,i)=>`<option value="${i}">${esc(d.d)} · ${esc(d.date)}</option>`).join("");const ti=todayIdx();sel.value=ti>=0?ti:0;document.getElementById("m-t").value="";document.getElementById("m-x").value="";document.getElementById("modal").style.display="flex";setTimeout(()=>document.getElementById("m-t").focus(),0)}
 function closeM(){document.getElementById("modal").style.display="none"}
 function addEntry(){const i=+document.getElementById("m-d").value,t=document.getElementById("m-t").value.trim(),x=document.getElementById("m-x").value.trim();if(!x||!S[i])return;
 const it={t,x,p:[],b:0,n:""},n=tmin(t),a=S[i].items;let k=n==null?-1:a.findIndex(o=>{const q=tmin(o.t);return q!=null&&q>n});if(k<0)a.push(it);else a.splice(k,0,it);
 save();closeM();if(view!="it")tab("it");render();setTimeout(()=>goDay(i),50)}
-function tab(v){if(v==view)return;view=v;const b=v=="bd";document.getElementById("itin").style.display=b?"none":"block";document.getElementById("bd").style.display=b?"block":"none";
-document.getElementById("hi").style.display=b?"none":"";document.getElementById("fab-add").style.display=b?"none":"flex";
-document.getElementById("set").style.display=!b&&editing?"block":"none";document.getElementById("done").style.display=!b&&editing?"inline-flex":"none";
-document.getElementById("t-it").classList.toggle("on",!b);document.getElementById("t-bd").classList.toggle("on",b);document.getElementById("pill").classList.toggle("r",b);const inc=document.getElementById(b?"bd":"itin");inc.classList.remove("sl","sr");void inc.offsetWidth;inc.classList.add(b?"sr":"sl");if(b)renderBudget()}
-document.getElementById("tabs").addEventListener("pointermove",e=>{if(e.buttons){const r=e.currentTarget.getBoundingClientRect();tab(e.clientX-r.left>r.width/2?"bd":"it")}});
+let tseq=0;
+function tab(v){if(v==view)return;view=v;const b=v=="bd",q=++tseq,g=x=>document.getElementById(x);
+g("hi").style.display=b?"none":"";g("fab-add").style.display=b?"none":"flex";
+g("t-it").classList.toggle("on",!b);g("t-bd").classList.toggle("on",b);g("pill").classList.toggle("r",b);
+const out=g(b?"itin":"bd"),inc=g(b?"bd":"itin");out.classList.remove("sl","sr","xl","xr");out.classList.add(b?"xl":"xr");
+setTimeout(()=>{if(q!=tseq)return;out.style.display="none";out.classList.remove("xl","xr");if(b)renderBudget();inc.style.display="block";inc.classList.remove("sl","sr");void inc.offsetWidth;inc.classList.add(b?"sr":"sl");scrollTo(0,0)},170)}
+let td=null;const tabsEl=document.getElementById("tabs"),pillEl=document.getElementById("pill");
+tabsEl.addEventListener("pointerdown",e=>{const r=tabsEl.getBoundingClientRect(),pw=r.width/2-3;td={x0:e.clientX,r,pw,off:e.clientX-(r.left+4+(view=="bd"?pw:0)),moved:false,cur:view=="bd"?pw:0}});
+document.addEventListener("pointermove",e=>{if(!td)return;if(!td.moved&&Math.abs(e.clientX-td.x0)>6){td.moved=true;pillEl.style.transition="none"}
+if(td.moved){td.cur=Math.max(0,Math.min(td.pw,e.clientX-td.r.left-4-td.off));pillEl.style.transform=`translateX(${td.cur}px)`;const b=td.cur>td.pw/2;document.getElementById("t-it").classList.toggle("on",!b);document.getElementById("t-bd").classList.toggle("on",b)}});
+function tabEnd(e,cancel){if(!td)return;const d=td;td=null;pillEl.style.transition="";const b=cancel?view=="bd":d.moved?d.cur>d.pw/2:e.clientX-d.r.left>d.r.width/2;pillEl.style.transform="";
+document.getElementById("t-it").classList.toggle("on",!b);document.getElementById("t-bd").classList.toggle("on",b);tab(b?"bd":"it")}
+document.addEventListener("pointerup",e=>tabEnd(e,false));document.addEventListener("pointercancel",e=>tabEnd(e,true));
 const CATS=[["Food & drink","#e9a23b"],["Transport","#3b82c4"],["Accommodation","#8e5bd0"],["Activities","#2e9e5b"],["Shopping","#d64f8a"],["Other","#8a8f98"]];
 const f0=n=>Math.round(n).toLocaleString("en-US"),short=n=>n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e3?Math.round(n/1e3)+"k":String(Math.round(n)),sumA=a=>a.reduce((t,e)=>t+e.a,0);
 let bcur="IDR";try{bcur=localStorage.getItem("bali-bcur")==="AUD"?"AUD":"IDR"}catch(e){}
@@ -313,27 +327,72 @@ if(ch){try{localStorage.setItem("bali-wx",JSON.stringify(WX))}catch(e){}if(!typi
 function wxChip(d){const p=wpl(d),x=dayDate(d);if(!p||!x||!WX[p[0]])return "";const w=WX[p[0]].d,key=x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"),i=w.time.indexOf(key);if(i<0)return "";
 const pop=w.precipitation_probability_max[i];return `<span class="wx"><svg viewBox="0 0 24 24">${WI[wkind(w.weather_code[i])]}</svg>${Math.round(w.temperature_2m_max[i])}°/${Math.round(w.temperature_2m_min[i])}°${pop>=30?" · "+pop+"%":""}</span>`}
 addEventListener("online",loadWx);
-const uid=it=>it.id||(it.id=Math.random().toString(36).slice(2,9)),hasE=it=>!!it.id&&B.some(e=>e.ref===it.id);
-let openE=null;
+const NA=' autocomplete="off" autocorrect="off" autocapitalize="sentences" spellcheck="false" enterkeyhint="done"';
+const uid=it=>it.id||(it.id=Math.random().toString(36).slice(2,9));
+const DOTS=`<svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>`,CHEV=`<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>`,NAV=`<svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>`,UPI=`<svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>`,DNI=`<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>`,TRASH=`<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,XIC=`<svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>`;
 const guessCat=t=>/breakfast|lunch|dinner|dessert|cafe|coffee|restaurant|warung|skewer|food|drink|bakery|bakehouse/i.test(t)?"Food & drink":/fly|flight|travel|taxi|car|transfer|airport/i.test(t)?"Transport":/check-?in|hotel|inn|stay/i.test(t)?"Accommodation":/spa|waterfall|beach|temple|dance|surf|walk|market|pottery|cycling|terrace|cave|club|tour|pool/i.test(t)?"Activities":"Food & drink";
-function expHtml(i,j,it){let h=B.filter(e=>e.ref&&e.ref===it.id).map(e=>`<span class="xp" data-id="${esc(e.id)}" onclick="delExpPill(this.dataset.id)" title="Tap to remove"><span class="dot" style="background:${(CATS.find(c=>c[0]==e.c)||CATS[5])[1]}"></span>${bcur=="AUD"?"A$":"Rp "}${fc(e.a)}</span>`).join("");
-if(openE&&openE[0]==i&&openE[1]==j){const g=guessCat(it.x);h+=`<div class="ef"><input type="text" inputmode="decimal" id="ef-a" placeholder="Amount"><select id="ef-u" style="flex:none;min-width:70px"><option>IDR</option><option>AUD</option></select><select id="ef-c">${CATS.map(c=>`<option${c[0]==g?" selected":""}>${esc(c[0])}</option>`).join("")}</select><button class="pri" onclick="saveEfx(${i},${j})">Add</button><button onclick="openE=null;render()">Cancel</button></div>`}
-return h?`<div class="xps">${h}</div>`:""}
-function openExp(i,j){uid(S[i].items[j]);openE=[i,j];render();setTimeout(()=>{const e=document.getElementById("ef-a");if(e)e.focus()},0)}
-function saveEfx(i,j){const it=S[i].items[j],a=num(document.getElementById("ef-a").value);if(!(a>0))return;
-B.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),d:S[i].date||S[i].d,x:it.x,c:document.getElementById("ef-c").value,a:Math.round(document.getElementById("ef-u").value=="AUD"?a*rate:a),ref:uid(it)});openE=null;save();render()}
-function delExpPill(id){if(confirm("Remove this expense?")){B=B.filter(e=>e.id!=id);save();render()}}
+let es=null,ds=null,COL={};try{COL=JSON.parse(localStorage.getItem("bali-col"))||{}}catch(e){}
+function isFold(i){const d=S[i],k=d.date||d.d;if(k in COL)return COL[k];const x=dayDate(d);return !!(x&&x<today0())&&i!=todayIdx()}
+function foldDay(i){const d=S[i];COL[d.date||d.d]=!isFold(i);try{localStorage.setItem("bali-col",JSON.stringify(COL))}catch(e){}render()}
+const amt=a=>(bcur=="AUD"?"A$":"Rp ")+fc(a);
+function pillsHtml(it){const h=B.filter(e=>e.ref&&e.ref===it.id).map(e=>`<span class="xp"><span class="dot" style="background:${(CATS.find(c=>c[0]==e.c)||CATS[5])[1]}"></span>${e.x&&e.x!==it.x?`<span class="xl2">${esc(e.x)}</span>`:""}<b>${amt(e.a)}</b></span>`).join("");return h?`<div class="xps">${h}</div>`:""}
+const dirLink=(p,a)=>"https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(p+" "+a);
+function renderNow(){const el=document.getElementById("now");if(!el)return;const ti=todayIdx(),nw=new Date(),m=nw.getHours()*60+nw.getMinutes();let h="";
+if(ti>=0){const d=S[ti],nx=d.items.map(it=>({it,q:tmin(it.t)})).find(o=>!o.it.b&&o.q!=null&&o.q>=m);
+if(nx){const mi=nx.q-m,eta=mi>=60?Math.floor(mi/60)+"h "+(mi%60)+"m":mi+"m",pl=nx.it.p[0];
+h=`<div class="nowc" onclick="goDay(${ti})"><div class="nl">Up next · in ${eta}</div><div class="nm"><b>${esc(nx.it.t)}</b> ${esc(nx.it.x)}</div><div class="nr">${wxChip(d)}${pl?`<a class="dir" onclick="event.stopPropagation()" target="_blank" rel="noopener" href="${dirLink(pl,d.area)}">${NAV}Directions</a>`:""}</div></div>`}
+else h=`<div class="nowc" onclick="goDay(${ti})"><div class="nl">Today</div><div class="nm">Nothing else scheduled today</div><div class="nr">${wxChip(d)}</div></div>`}
+else{const n=today0(),fi=S.findIndex(d=>{const x=dayDate(d);return x&&x>n});if(fi>=0){const days=Math.round((dayDate(S[fi])-n)/864e5);h=`<div class="nowc" onclick="goDay(${fi})"><div class="nl">${days==1?"Tomorrow":"In "+days+" days"} · ${esc(S[fi].d)}</div><div class="nm">${esc(S[fi].items[0]?S[fi].items[0].x:S[fi].loc)}</div></div>`}}
+el.innerHTML=h}
+function rowTap(e,i,j){if((e.target.closest&&e.target.closest("a"))||Date.now()-noClick<350)return;openEntry(i,j)}
+function openSheet(id){document.getElementById("bk").classList.add("on");document.getElementById(id).classList.add("open");if(id=="s-sync")document.getElementById("u").value=url}
+function closeSheets(){if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();document.getElementById("bk").classList.remove("on");["s-entry","s-day","s-sync"].forEach(x=>document.getElementById(x).classList.remove("open"));es=ds=null;render()}
+function openEntry(i,j){uid(S[i].items[j]);es=[i,j];renderEntry();openSheet("s-entry")}
+const cur=()=>S[es[0]].items[es[1]];
+function renderEntry(){const it=cur(),g=notes(it),ex=B.filter(e=>e.ref===it.id),cg=guessCat(it.x);
+document.getElementById("s-entry").innerHTML=`<div class="grab"></div>
+<div class="row"><input type="text"${NA} value="${esc(it.t)}" placeholder="Time" style="width:96px;flex:none;margin:0" oninput="eSet('t',this.value)"><input type="text"${NA} value="${esc(it.x)}" placeholder="Activity" style="margin:0" oninput="eSet('x',this.value)"></div>
+<label class="fl">Places · become map links</label><input type="text"${NA} value="${esc(it.p.join(", "))}" placeholder="Comma separated" oninput="eSet('p',this.value)">
+<label class="fl">Notes</label>${g.map((t,k)=>`<div class="row"><input type="text"${NA} value="${esc(t)}" placeholder="Note" oninput="eNote(${k},this.value)"><button class="ib" onclick="eNoteDel(${k})" aria-label="Remove note">${XIC}</button></div>`).join("")}<button class="ghost" onclick="eNoteAdd()">+ Add note</button>
+<label class="fl">Expenses</label>${ex.map(e=>`<div class="er"><span class="dot" style="background:${(CATS.find(c=>c[0]==e.c)||CATS[5])[1]}"></span><div class="ex"><div>${esc(e.x)}</div><small>${esc(e.c)}</small></div><b>${amt(e.a)}</b><button class="ib" data-id="${esc(e.id)}" onclick="eExpDel(this.dataset.id)" aria-label="Remove expense">${XIC}</button></div>`).join("")}
+<div class="ef" style="margin-top:6px"><input type="text"${NA} id="ef-x" placeholder="Description (e.g. Nasi goreng)" onkeydown="if(event.key=='Enter')document.getElementById('ef-a').focus()"><input type="text"${NA} inputmode="decimal" id="ef-a" placeholder="Amount" onkeydown="if(event.key=='Enter')saveEfx()"><select id="ef-u" style="flex:none;min-width:70px"><option>IDR</option><option>AUD</option></select><select id="ef-c">${CATS.map(c=>`<option${c[0]==cg?" selected":""}>${esc(c[0])}</option>`).join("")}</select><button class="pri" onclick="saveEfx()">Add</button></div>
+<label class="tgl"><input type="checkbox" ${it.b?"checked":""} onchange="eSet('b',this.checked?1:0)"> Backup plan</label>
+<div class="acts"><button class="ib" onclick="eMove(-1)" aria-label="Move up" title="Move up">${UPI}</button><button class="ib" onclick="eMove(1)" aria-label="Move down" title="Move down">${DNI}</button><button class="ib" onclick="eDel()" aria-label="Delete entry" title="Delete entry">${TRASH}</button><button class="pri" onclick="closeSheets()">Done</button></div>`}
+function eSet(f,v){const it=cur();if(f=="p")it.p=v.split(",").map(s=>s.trim()).filter(Boolean);else it[f]=v;save()}
+function eNote(k,v){const it=cur(),a=[...notes(it)];a[k]=v;it.ns=a;syncN(it);save()}
+function eNoteAdd(){const it=cur();it.ns=[...notes(it),""];syncN(it);save();renderEntry();setTimeout(()=>{const n=[...document.querySelectorAll('#s-entry input[placeholder="Note"]')];if(n.length)n[n.length-1].focus()},0)}
+function eNoteDel(k){const it=cur(),a=[...notes(it)];a.splice(k,1);it.ns=a;syncN(it);save();renderEntry()}
+function eExpDel(id){B=B.filter(e=>e.id!=id);save();renderEntry()}
+function saveEfx(){const[i,j]=es,it=S[i].items[j],a=num(document.getElementById("ef-a").value);if(!(a>0))return;
+B.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),d:S[i].date||S[i].d,x:document.getElementById("ef-x").value.trim()||it.x,c:document.getElementById("ef-c").value,a:Math.round(document.getElementById("ef-u").value=="AUD"?a*rate:a),ref:uid(it)});save();renderEntry();setTimeout(()=>{const e=document.getElementById("ef-x");if(e)e.focus()},0)}
+function eMove(d){const[i,j]=es,a=S[i].items,k=j+d;if(k<0||k>=a.length)return;[a[j],a[k]]=[a[k],a[j]];es[1]=k;save();renderEntry();render()}
+function eDel(){if(!confirm("Delete this entry?"))return;const[i,j]=es;S[i].items.splice(j,1);save();closeSheets()}
+function openDay(i){ds=i;renderDay();openSheet("s-day")}
+function renderDay(){const d=S[ds];document.getElementById("s-day").innerHTML=`<div class="grab"></div><label class="fl" style="margin-top:0">Day</label><div class="row"><input type="text"${NA} value="${esc(d.d)}" placeholder="Day 1" oninput="dSet('d',this.value)"><input type="text"${NA} value="${esc(d.date)}" placeholder="Sat 3 Oct" oninput="dSet('date',this.value)"></div>
+<label class="fl">Location</label><input type="text"${NA} value="${esc(d.loc)}" placeholder="e.g. Ubud" oninput="dSet('loc',this.value)">
+<label class="fl">Map area · used for place links and weather</label><input type="text"${NA} value="${esc(d.area)}" placeholder="e.g. Ubud, Bali" oninput="dSet('area',this.value)">
+<label class="fl">Colour</label><select onchange="dSet('color',this.value)">${[["ubud","Pink"],["ulu","Blue"],["solo","Green"],["jkt","Red"],["syd","Grey"]].map(c=>`<option value="${c[0]}"${(d.color||"syd")==c[0]?" selected":""}>${c[1]}</option>`).join("")}</select>
+<div class="acts"><button class="ib" onclick="dDel()" aria-label="Delete day" title="Delete day">${TRASH}</button><button class="pri" onclick="closeSheets()">Done</button></div>`}
+function dSet(f,v){S[ds][f]=v;save()}
+function dDel(){if(!confirm("Delete this whole day?"))return;S.splice(ds,1);save();closeSheets()}
+function newDay(){S.push({d:"Day "+(S.length+1),date:"",loc:"",area:"Bali",color:"syd",items:[]});save();render();openDay(S.length-1)}
 let drag=null;
 function dragCalc(){const d=drag,dy=d.y-d.y0+(scrollY-d.s0);d.it.style.transform=`translateY(${dy}px)`;const R=d.r,c=R[d.idx].top+R[d.idx].h/2+dy;let t=d.idx;
 if(dy>0){for(let k=d.idx+1;k<R.length;k++)if(c>R[k].top+R[k].h/2)t=k}else{for(let k=d.idx-1;k>=0;k--)if(c<R[k].top+R[k].h/2)t=k}
 d.t=t;const h=R[d.idx].h;d.els.forEach((x,m)=>{if(m==d.idx)return;let sh=0;if(d.idx<t&&m>d.idx&&m<=t)sh=-h;else if(d.idx>t&&m>=t&&m<d.idx)sh=h;x.style.transform=sh?`translateY(${sh}px)`:""})}
 function dragLoop(){if(!drag)return;if(drag.y<90)scrollBy(0,-10);else if(drag.y>innerHeight-80)scrollBy(0,10);dragCalc();requestAnimationFrame(dragLoop)}
-function dragEnd(){if(!drag)return;const d=drag;drag=null;d.els.forEach(x=>{x.style.transform=""});d.it.classList.remove("drag");d.sec.classList.remove("dragging");
+function dragEnd(){if(!drag)return;const d=drag;drag=null;noClick=Date.now();d.els.forEach(x=>{x.style.transform=""});d.it.classList.remove("drag");d.sec.classList.remove("dragging");
 if(d.t!=d.idx){const i=+d.it.dataset.i,a=S[i].items,o=a.map((_,k)=>k);o.splice(d.idx,1);o.splice(d.t,0,d.idx);S[i].items=o.map(k=>a[k]);save()}render()}
-document.getElementById("app").addEventListener("pointerdown",e=>{const g=e.target.closest&&e.target.closest(".grip");if(!g)return;e.preventDefault();const it=g.closest(".item"),sec=it.parentElement,els=[...sec.querySelectorAll(".item[data-j]")];
-drag={it,sec,els,idx:els.indexOf(it),t:els.indexOf(it),y:e.clientY,y0:e.clientY,s0:scrollY,r:els.map(x=>({top:x.offsetTop,h:x.offsetHeight}))};it.classList.add("drag");sec.classList.add("dragging");dragLoop()});
+let lp=null,noClick=0;
+function startDrag(it,y){const sec=it.parentElement,els=[...sec.querySelectorAll(".item[data-j]")];drag={it,sec,els,idx:els.indexOf(it),t:els.indexOf(it),y,y0:y,s0:scrollY,r:els.map(x=>({top:x.offsetTop,h:x.offsetHeight}))};it.classList.add("drag");sec.classList.add("dragging");if(navigator.vibrate)navigator.vibrate(12);dragLoop()}
+document.getElementById("app").addEventListener("pointerdown",e=>{const it=e.target.closest&&e.target.closest(".item[data-j]");if(!it||e.target.closest("a"))return;lp={it,x:e.clientX,y:e.clientY,tm:setTimeout(()=>{if(lp){const l=lp;lp=null;startDrag(l.it,l.y)}},380)}});
+document.addEventListener("pointermove",e=>{if(lp){lp.y=e.clientY;if(Math.abs(e.clientX-lp.x)>8){clearTimeout(lp.tm);lp=null}}});
+document.addEventListener("pointerup",()=>{if(lp){clearTimeout(lp.tm);lp=null}});
+document.addEventListener("touchmove",e=>{if(drag)e.preventDefault()},{passive:false});
+document.getElementById("app").addEventListener("contextmenu",e=>{if(e.target.closest&&e.target.closest(".item"))e.preventDefault()});
 document.addEventListener("pointermove",e=>{if(drag)drag.y=e.clientY});document.addEventListener("pointerup",dragEnd);document.addEventListener("pointercancel",dragEnd);
 render();
 loadWx();
 if(todayIdx()>=0)setTimeout(goToday,300);
+renderNow();setInterval(renderNow,60000);
 </script></body></html>
